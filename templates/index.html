@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robot Control</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        .status { margin-top: 20px; }
+        .schedule { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Robot Control Panel</h1>
+
+    <button class="button" id="startBtn">Start Robot</button>
+    <button class="button" id="stopBtn">Stop Robot</button>
+
+    <div class="status">
+        <h3>Status</h3>
+        <p>Robot Status: <span id="robotStatus">{{ robot_status }}</span></p>
+        <p>Voltage: <span id="voltage">{{ voltage }}</span> V</p>
+        <p>Schedule: <span id="schedule">{{ schedule }}</span></p>
+    </div>
+
+    <div class="schedule">
+        <h3>Set Schedule</h3>
+        <form id="scheduleForm">
+            <label for="days">Select Days:</label>
+            <select id="days" multiple>
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+                <option value="Saturday">Saturday</option>
+                <option value="Sunday">Sunday</option>
+            </select><br>
+            <label for="time">Select Time:</label>
+            <input type="time" id="time" required><br>
+            <button type="submit" class="button">Set Schedule</button>
+        </form>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#startBtn').click(function() {
+                $.post('/start', function(response) {
+                    $('#robotStatus').text('Running');
+                });
+            });
+
+            $('#stopBtn').click(function() {
+                $.post('/stop', function(response) {
+                    $('#robotStatus').text('Stopped');
+                });
+            });
+
+            $('#scheduleForm').submit(function(e) {
+                e.preventDefault();
+                const days = $('#days').val();
+                const time = $('#time').val();
+                $.ajax({
+                    url: '/schedule',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ days: days, time: time }),
+                    success: function(response) {
+                        $('#schedule').text(JSON.stringify(response.schedule));
+                    }
+                });
+            });
+
+            function updateStatus() {
+                $.get('/status', function(response) {
+                    $('#robotStatus').text(response.robot_status);
+                    $('#voltage').text(response.voltage);
+                    $('#schedule').text(JSON.stringify(response.schedule));
+                });
+            }
+
+            setInterval(updateStatus, 5000); // Update status every 5 seconds
+        });
+    </script>
+</body>
+</html>
+</title>
+</head>
+<body>
+
+</body>
+</html>
