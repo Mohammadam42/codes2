@@ -7,6 +7,9 @@ app = Flask(__name__)
 mqtt_broker = "885dce4dddce4977b1959e2fd8d937b1.s1.eu.hivemq.cloud"  # Change this to your broker
 mqtt_port = 8883
 mqtt_topic = "robot/status"
+mqtt_username = "mohammad"  # Replace with your MQTT username
+mqtt_password = "0776004687@oO"  # Replace with your MQTT password
+
 mqtt_client = mqtt.Client()
 
 # Robot state
@@ -27,9 +30,10 @@ def on_message(client, userdata, msg):
     elif payload == "stop":
         robot_status = "Stopped"
 
-# Connect MQTT
+# Connect MQTT with authentication
 mqtt_client.on_connect = on_connect
 mqtt_client.on_message = on_message
+mqtt_client.username_pw_set(mqtt_username, mqtt_password)  # Set the username and password
 mqtt_client.connect(mqtt_broker, mqtt_port, 60)
 mqtt_client.loop_start()
 
