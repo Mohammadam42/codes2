@@ -4,8 +4,8 @@ import paho.mqtt.client as mqtt
 app = Flask(__name__)
 
 # MQTT Setup
-mqtt_broker = "mqtt.eclipse.org"  # Change this to your broker
-mqtt_port = 1883
+mqtt_broker = "885dce4dddce4977b1959e2fd8d937b1.s1.eu.hivemq.cloud"  # Change this to your broker
+mqtt_port = 8883
 mqtt_topic = "robot/status"
 mqtt_client = mqtt.Client()
 
