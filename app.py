@@ -10,6 +10,7 @@ mqtt_port = 8883
 mqtt_topic = "robot/status"
 mqtt_username = "mohammad"  # Replace with your MQTT username
 mqtt_password = "0776004687@oO"  # Replace with your MQTT password
+
 mqtt_client = mqtt.Client()
 
 # Robot state
@@ -25,10 +26,13 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     global robot_status
     payload = msg.payload.decode("utf-8")
+    print(f"Received message: {payload}")  # Added for debugging
     if payload == "start":
         robot_status = "Running"
+        print("Robot started")  # Print to console when robot is started
     elif payload == "stop":
         robot_status = "Stopped"
+        print("Robot stopped")  # Print to console when robot is stopped
 
 # Connect MQTT with authentication
 mqtt_client.on_connect = on_connect
@@ -44,12 +48,14 @@ def index():
 
 @app.route('/start', methods=['POST'])
 def start_robot():
-    mqtt_client.publish(mqtt_topic, "start")
+    mqtt_client.publish(mqtt_topic, "start")  # Publish the "start" message to the MQTT topic
+    print("Published 'start' message to MQTT")  # Debugging line to check if the message is being sent
     return jsonify(status="Started")
 
 @app.route('/stop', methods=['POST'])
 def stop_robot():
-    mqtt_client.publish(mqtt_topic, "stop")
+    mqtt_client.publish(mqtt_topic, "stop")  # Publish the "stop" message to the MQTT topic
+    print("Published 'stop' message to MQTT")  # Debugging line to check if the message is being sent
     return jsonify(status="Stopped")
 
 @app.route('/schedule', methods=['POST'])
