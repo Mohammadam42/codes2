@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template, jsonify, request
 import paho.mqtt.client as mqtt
 
@@ -9,7 +10,6 @@ mqtt_port = 8883
 mqtt_topic = "robot/status"
 mqtt_username = "mohammad"  # Replace with your MQTT username
 mqtt_password = "0776004687@oO"  # Replace with your MQTT password
-
 mqtt_client = mqtt.Client()
 
 # Robot state
@@ -65,4 +65,7 @@ def status():
     return jsonify(robot_status=robot_status, voltage=voltage, schedule=schedule)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Get the PORT from the environment (Render will provide this)
+    port = int(os.environ.get('PORT', 5000))  # Default to 5000 if not set
+    # Run Flask on 0.0.0.0 and the correct port
+    app.run(host='0.0.0.0', port=port, debug=True)
